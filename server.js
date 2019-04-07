@@ -1,3 +1,12 @@
-require("./project").server({
-  httpPort: process.env.PORT || 8080 // Optional, but added here for demo purposes
-});
+
+var finalhandler = require('finalhandler')
+var http = require('http')
+var serveStatic = require('serve-static')
+
+var serve = serveStatic(__dirname + "/dist");
+
+var server = http.createServer(function onRequest (req, res) {
+  serve(req, res, finalhandler(req, res))
+})
+
+server.listen(process.env.PORT || 8080)
