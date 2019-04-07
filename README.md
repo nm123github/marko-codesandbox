@@ -1,9 +1,8 @@
-Marko Widgets: UI Components Playground
+Marko template for sandbox.io
 ==================================
 
 ```bash
-git clone https://github.com/marko-js-samples/marko-webpack.git
-cd marko-webpack
-npm install
+git clone https://github.com/nm123github/marko-codesandbox.git
+cd marko-codesandbox
 npm start
 ```
