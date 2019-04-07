@@ -5,6 +5,7 @@ const outputDirectory = "./dist";
 
 module.exports = {
   entry: "./src/client.js",
+  mode: "development",
   output: {
     path: path.resolve(__dirname, outputDirectory),
     filename: "client.js"

@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "webpack",
-    "watch": "chokidar --initial \"src/**/*\" -c \"webpack\"",
-    "start": "npm run watch & nodemon server.js"
+    "start": "chokidar --initial \"src/**/*\" -c \"webpack\" & nodemon server.js"
   },
   "repository": {
     "type": "git",
