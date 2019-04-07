@@ -4,7 +4,9 @@
   "description": "Sample app that demonstrates the power of building UI components using Marko (for codesandbox.io)",
   "main": "server.js",
   "scripts": {
-    "start": "chokidar --initial \"src/**/*\" -c \"webpack\" & nodemon server.js"
+    "build": "webpack",
+    "watch": "chokidar --initial \"src/**/*\" -c \"webpack\"",
+    "start": "npm run watch & nodemon server.js"
   },
   "repository": {
     "type": "git",
