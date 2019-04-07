@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "webpack",
-    "start": "SHELL=/bin/bash chokidar --initial \"src/**/*\" -c \"webpack\" & nodemon server.js"
+    "start": "SHELL=/bin/bash chokidar --initial \"src/**/*\" -c \"webpack\""
   },
   "repository": {
     "type": "git",
