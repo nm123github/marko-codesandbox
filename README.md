@@ -1,8 +1,9 @@
-Marko template for sandbox.io
+Marko (server-side) template for sandbox.io
 ==================================
 
 ```bash
 git clone https://github.com/nm123github/marko-codesandbox.git
 cd marko-codesandbox
-npm start
+npm install
+npm start:dev
 ```

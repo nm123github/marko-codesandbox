@@ -1,36 +1,120 @@
-
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
-const outputDirectory = "./dist";
+const webpack = require("webpack");
+const MarkoPlugin = require("@marko/webpack/plugin").default;
+const CSSExtractPlugin = require("mini-css-extract-plugin");
+const IgnoreEmitPlugin = require("ignore-emit-webpack-plugin");
+const SpawnServerPlugin = require("spawn-server-webpack-plugin");
 
-module.exports = {
-  entry: "./src/client.js",
-  mode: "development",
+const { NODE_ENV } = process.env;
+const mode = NODE_ENV ? "production" : "development";
+const spawnedServer = new SpawnServerPlugin();
+const markoPlugin = new MarkoPlugin();
+
+const baseConfig = {
+  mode,
+  devtool: "source-map",
   output: {
-    path: path.resolve(__dirname, outputDirectory),
-    filename: "client.js"
+    publicPath: "/static/"
+  },
+  resolve: {
+    extensions: [".js", ".json", ".marko"]
   },
   module: {
     rules: [
       {
-        test: /\.(less|css)$/, // matches style.less { ... } from our template
-        loader: "style-loader!css-loader!less-loader!"
-      },
-      {
         test: /\.marko$/,
-        loader: 'marko-loader'
+        loader: "@marko/webpack/loader"
       },
       {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader"
-        }
+        test: /\.(less|css)$/,
+        use: [CSSExtractPlugin.loader, "css-loader", "less-loader"]
       },
+      {
+        test: /\.svg/,
+        loader: "svg-url-loader"
+      },
+      {
+        test: /\.(jpg|jpeg|gif|png)$/,
+        loader: "file-loader"
+      }
     ]
+  }
+};
+
+const serverConfig = {
+  ...baseConfig,
+  name: "Server",
+  target: "async-node",
+  entry: "./src/index.js",
+  externals: [/^(?!marko)[^./!]/],
+  optimization: {
+    minimize: false
+  },
+  output: {
+    ...baseConfig.output,
+    filename: "main.js",
+    libraryTarget: "commonjs2",
+    path: path.join(__dirname, "dist/server"),
+    devtoolModuleFilenameTemplate: info =>
+      path.relative(serverConfig.output.path, info.absoluteResourcePath)
   },
   plugins: [
-    new HtmlWebpackPlugin()
+    new webpack.DefinePlugin({
+      "process.browser": undefined,
+      "process.env.BUNDLE": true
+    }),
+    new webpack.BannerPlugin({
+      banner: 'require("source-map-support").install();',
+      raw: true
+    }),
+    new CSSExtractPlugin({
+      filename: "[name].[contenthash:8].css"
+    }),
+    new IgnoreEmitPlugin(/\.(css|jpg|jpeg|gif|png)$/),
+    markoPlugin.server
   ]
 };
 
+const browserConfig = {
+  ...baseConfig,
+  name: "Browser",
+  target: "web",
+  output: {
+    ...baseConfig.output,
+    filename: "[name].[contenthash:8].js",
+    path: path.join(__dirname, "dist/client")
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.browser": true
+    }),
+    new CSSExtractPlugin({
+      filename: "[name].[contenthash:8].css"
+    }),
+    markoPlugin.browser
+  ],
+  devServer: {
+    inline: false,
+    stats: "minimal",
+    ...spawnedServer.devServerConfig
+  }
+};
+
+if (mode === "production") {
+  const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+  const CleanPlugin = require("clean-webpack-plugin");
+
+  browserConfig.plugins.push(new OptimizeCssAssetsPlugin(), new CleanPlugin());
+  browserConfig.optimization = {
+    splitChunks: {
+      chunks: "all",
+      maxInitialRequests: 3
+    }
+  };
+
+  serverConfig.plugins.push(new CleanPlugin());
+} else {
+  serverConfig.plugins.push(spawnedServer);
+}
+
+module.exports = [browserConfig, serverConfig];
