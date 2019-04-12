@@ -5,8 +5,8 @@
   "main": "dist/server/main.js",
   "scripts": {
     "build": "NODE_ENV=production webpack",
-    "start:dev": "webpack-dev-server",
-    "start": "NODE_ENV=production node dist/server/main.js"
+    "start": "webpack-dev-server",
+    "start:prod": "NODE_ENV=production node dist/server/main.js"
   },
   "repository": {
     "type": "git",
