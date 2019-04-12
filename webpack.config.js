@@ -97,7 +97,22 @@ const browserConfig = {
     inline: false,
     stats: "minimal",
     publicPath: '/',
-    ...spawnedServer.devServerConfig
+    //...spawnedServer.devServerConfig
+    proxy: {
+      '**': {
+        target: true,
+        router: function () {
+          return 'http://127.0.0.1:' + this.address.port
+        }.bind(this)
+      }
+    },
+    before: function (app) {
+      process.env.PORT = 0
+      app.use(function (req, res, next) {
+        if (this.listening) next()
+        else this.once('listening', next)
+      }.bind(this))
+    }.bind(this)
   }
 };
 
