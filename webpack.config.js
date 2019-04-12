@@ -96,6 +96,7 @@ const browserConfig = {
   devServer: {
     inline: false,
     stats: "minimal",
+    publicPath: '/',
     ...spawnedServer.devServerConfig
   }
 };
