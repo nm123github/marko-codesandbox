@@ -1,11 +1,11 @@
 
 import express from "express";
+import serveStatic from "serve-static";
 import Home from "./pages/Home.marko";
 
 const app = express();
 const port = process.env.PORT || 8080;
 
-import serveStatic from "serve-static";
 app.use("/static", serveStatic("dist/client"));
 
 app.get("/", (req, res) => {
