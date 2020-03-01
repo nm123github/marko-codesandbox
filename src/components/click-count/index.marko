@@ -1,13 +1,56 @@
 
 class {
   onCreate(input, out) {
-    this.state = { count: input.count };
+    this.state = { 
+      count: input.count,
+      savedNumbers: []
+     };
+
+     fetch('https://api.backendless.com/285947FE-5D3D-24E1-FF4F-C99526105700/DE95590D-C580-4F0B-9A29-9448092EC909/services/daysTil/getDaysTilXmas')
+     .then(function(data) {
+       this.state.daysTilXmas = data.text()
+     })
   }
   increment() {
     console.log('count: ' + this.state.count)
     this.state.count++;
   }
+  decrement() {
+    console.log('count: ' + this.state.count)
+    this.state.count--;
+  }
+  save() {
+    console.log('saving '+this.state.count)
+    this.state.savedNumbers.push(this.state.count)
+    this.setStateDirty("savedNumbers")
+  }
+  remove(index) {
+    console.log('removing '+index)
+    this.state.savedNumbers.splice(index,1)
+    this.setStateDirty("savedNumbers")
+  }
 }
 
 <div.count>${state.count}</div>
-<button.example-button on-click('increment')>Click me!</button>
+
+<if(state.count % 10 == 0)>
+    <div>Multiple of 10</div>
+</if>
+
+<if(state.savedNumbers && state.savedNumbers.length)>
+    <div>Saved ${state.savedNumbers.length} Numbers</div>
+    <ul>
+    <for|savedNumber, index| of=state.savedNumbers>
+        <li>${index} = ${savedNumber}
+         <button,example-button on-click('remove', index)>X</button>
+        </li>
+    </for>
+    </ul>
+
+</if>
+
+<div>Days til Xmas: ${state.daysTilXmas}</div>
+
+<button.example-button on-click('increment')>+</button>
+<button.example-button on-click('decrement')>-</button>
+<button.example-button on-click('save')>Save</button>

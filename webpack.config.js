@@ -15,6 +15,7 @@ const baseConfig = {
   devtool: "source-map",
   output: {
     publicPath: "/static/"
+    //publicPath: "/public/"
   },
   resolve: {
     extensions: [".js", ".json", ".marko"]
@@ -46,6 +47,7 @@ const serverConfig = {
   name: "Server",
   target: "async-node",
   entry: "./src/index.js",
+  //entry: "./public/index.js",
   externals: [/^(?!marko)[^./!]/],
   optimization: {
     minimize: false
@@ -96,7 +98,8 @@ const browserConfig = {
   devServer: {
     inline: false,
     stats: "minimal",
-    publicPath: '/',
+    //publicPath: "/",
+    publicPath: "/build",
     ...spawnedServer.devServerConfig
   }
 };

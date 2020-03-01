@@ -1,11 +1,12 @@
 {
-  "name": "marko-codesandbox",
+  "name": "markojs",
   "description": "Sample (server-side) MarkoJS app (for codesandbox.io)",
   "version": "1.0.0",
   "main": "dist/server/main.js",
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "start": "webpack-dev-server",
+    "xstart": "public",
     "start:prod": "NODE_ENV=production node dist/server/main.js"
   },
   "repository": {
@@ -41,5 +42,6 @@
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.3.0"
-  }
+  },
+  "keywords": []
 }
